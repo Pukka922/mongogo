@@ -18,10 +18,6 @@ var mi mongoInstance
 func InitConnection(connectionString, databaseName string) error {
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(connectionString))
 
-	defer func() {
-		client.Disconnect(context.Background())
-	}()
-
 	if err != nil {
 		return err
 	}
@@ -40,4 +36,8 @@ func InitConnection(connectionString, databaseName string) error {
 	}
 
 	return nil
+}
+
+func Disconnect() {
+	mi.Client.Disconnect(context.Background())
 }
