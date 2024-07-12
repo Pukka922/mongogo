@@ -19,6 +19,18 @@ func (m *Mongo[T]) Delete(query interface{}) (bool, error) {
 	return true, nil
 }
 
+func (m *Mongo[T]) DeleteMany(query interface{}) (bool, error) {
+	collection := m.GetCollection()
+
+	_, err := collection.DeleteMany(context.Background(), query)
+
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
 func (m *Mongo[T]) DeleteById(id string) (bool, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 

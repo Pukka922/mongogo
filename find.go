@@ -69,3 +69,20 @@ func (m *Mongo[T]) FindOneById(id, filter string) (*T, error) {
 		{Key: "_id", Value: objectId},
 	}, "")
 }
+
+func (M *Mongo[T]) FindByIds(ids []string, filter string) ([]T, error) {
+	var oids []primitive.ObjectID
+
+	for _, val := range ids {
+		oid, err := primitive.ObjectIDFromHex(val)
+
+		if err != nil {
+			continue
+		}
+		oids = append(oids, oid)
+	}
+
+	return M.Find(bson.D{
+		{Key: "_id", Value: bson.D{{Key: "$in", Value: oids}}},
+	}, filter)
+}
