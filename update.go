@@ -40,3 +40,21 @@ func (m *Mongo[T]) UpdateOneWithReplaceById(id string, data interface{}, filter 
 
 	return m.UpdateOneWithReplace(bson.D{{Key: "_id", Value: objectId}}, data, filter)
 }
+
+func (m *Mongo[T]) UpdateById(id string, data interface{}, filter string) (*T, error) {
+	objectId, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	collection := m.GetCollection()
+
+	_, err = collection.UpdateOne(context.Background(), bson.D{{Key: "_id", Value: objectId}}, data)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return m.FindOne(bson.D{{Key: "_id", Value: objectId}}, filter)
+}
